@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { toast } from './Toast';
+import { toast } from '../components/Toast';
 
 const connectedNodes = [
   { title: '03 OSI Model',      desc: 'Layered communication standards', icon: 'layers',   color: '#00d4ff' },

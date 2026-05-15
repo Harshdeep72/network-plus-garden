@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { notes, type NoteEntry } from 'virtual:notes'
-import { toast } from './Toast'
+import { toast } from '../components/Toast'
 
 /* ── Markdown renderer ──────────────────────────────────── */
 function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { notes } from 'virtual:notes';
-import { toast } from './Toast';
+import { toast } from '../components/Toast';
 
 const mocs = [
   { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/note/networking-fundamentals-moc' },
