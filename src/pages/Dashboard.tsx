@@ -62,7 +62,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
             );
           }
           return (
-            <button key={item.label} className="nav-item" onClick={() => comingSoon(item.label)}
+            <button key={item.label} className="nav-item" onClick={() => toast('Coming Soon', item.label, 'info')}
               style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}>
               <span className="material-symbols-outlined icon">{item.icon}</span>
               {item.label}
@@ -194,7 +194,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
                 return m.to ? (
                   <Link key={m.label} to={m.to} style={{ textDecoration: 'none' }}>{inner}</Link>
                 ) : (
-                  <div key={m.label} style={{ cursor: 'pointer' }} onClick={() => comingSoon(`${m.label} MOC`)}>{inner}</div>
+                  <div key={m.label} style={{ cursor: 'pointer' }} onClick={() => toast('Coming Soon', `${m.label} MOC`, 'info')}>{inner}</div>
                 );
               })}
             </div>

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-// @ts-expect-error missing strict types for ForceGraph2D
 import ForceGraph2D from 'react-force-graph-2d'
 import { notes } from 'virtual:notes'
 
@@ -16,7 +15,7 @@ const folderColor = (f: string) => FOLDER_COLORS[folders.indexOf(f) % FOLDER_COL
 
 export default function KnowledgeGraph() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const fgRef = useRef<any>()
+  const fgRef = useRef<any>(null)
   const [dim, setDim] = useState({ w: 0, h: 0 })
   const [hoverNode, setHoverNode] = useState<any | null>(null)
   const [filterFolder, setFilterFolder] = useState<string | null>(null)
@@ -43,8 +42,6 @@ export default function KnowledgeGraph() {
     const nodes = visibleNotes.map(n => ({
       id: n.slug,
       name: n.title,
-      folder: n.folder,
-      tags: n.tags,
       val: n.maturity === 'evergreen' ? 7 : n.maturity === 'budding' ? 5 : 3.5,
       color: folderColor(n.folder),
       ...n
@@ -116,7 +113,6 @@ export default function KnowledgeGraph() {
         {/* Canvas container */}
         <div ref={containerRef} style={{ flex:1,position:'relative' }}>
           {dim.w > 0 && dim.h > 0 && (
-            // @ts-expect-error missing strict types for ForceGraph2D
             <ForceGraph2D
               ref={fgRef}
               width={dim.w}
