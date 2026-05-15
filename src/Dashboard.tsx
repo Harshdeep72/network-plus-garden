@@ -3,12 +3,12 @@ import { notes } from 'virtual:notes';
 import { toast } from './Toast';
 
 const mocs = [
-  { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/explore' },
-  { icon: '◈', label: 'Network Security',        sub: 'Firewalls · VPNs · AAA',   color: '#00ff88', notes: 31, progress: 40, to: null },
-  { icon: '◈', label: 'Troubleshooting',         sub: 'Tools · Methodology · Labs', color: '#a78bfa', notes: 28, progress: 25, to: null },
-  { icon: '◈', label: 'Infrastructure',          sub: 'Routing · Switching · WAN', color: '#fb923c', notes: 35, progress: 50, to: null },
-  { icon: '◈', label: 'Wireless Networking',     sub: 'Wi-Fi · Bluetooth · Cellular', color: '#f472b6', notes: 19, progress: 20, to: null },
-  { icon: '◈', label: 'Cloud Networking',        sub: 'AWS · Azure · Hybrid',       color: '#34d399', notes: 22, progress: 15, to: null },
+  { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/note/networking-fundamentals-moc' },
+  { icon: '◈', label: 'Network Security',        sub: 'Firewalls · VPNs · AAA',   color: '#00ff88', notes: 31, progress: 40, to: '/note/security-moc' },
+  { icon: '◈', label: 'Troubleshooting',         sub: 'Tools · Methodology · Labs', color: '#a78bfa', notes: 28, progress: 25, to: '/note/troubleshooting-moc' },
+  { icon: '◈', label: 'Infrastructure',          sub: 'Routing · Switching · WAN', color: '#fb923c', notes: 35, progress: 50, to: '/explore' },
+  { icon: '◈', label: 'Wireless Networking',     sub: 'Wi-Fi · Bluetooth · Cellular', color: '#f472b6', notes: 19, progress: 20, to: '/explore' },
+  { icon: '◈', label: 'Cloud Networking',        sub: 'AWS · Azure · Hybrid',       color: '#34d399', notes: 22, progress: 15, to: '/explore' },
 ];
 
 
@@ -28,9 +28,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
   const circumference = 2 * Math.PI * 54;
   const offset = circumference - (readiness / 100) * circumference;
 
-  function comingSoon(label: string) {
-    toast(`${label} — Coming Soon`, 'This feature is currently being built.', 'coming-soon');
-  }
+
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100dvh', display: 'flex' }}>
@@ -101,7 +99,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
             <div className="mono" style={{ padding: '5px 12px', borderRadius: 6, fontSize: 11, background: 'rgba(0,212,255,0.08)', color: 'var(--cyan)', border: '1px solid rgba(0,212,255,0.2)' }}>N10-009</div>
-            <button onClick={() => comingSoon('Profile')} style={{ width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(0,212,255,0.4)', flexShrink: 0, padding: 0, cursor: 'pointer', background: 'none' }}>
+            <button onClick={() => toast('Profile', 'Settings are read-only for local instances.', 'info')} style={{ width: 34, height: 34, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(0,212,255,0.4)', flexShrink: 0, padding: 0, cursor: 'pointer', background: 'none' }}>
               <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoA3zIkTpq2Isxhb7-y4-1CTnmnwJKVeev0WvED2N_EnNynkER3JpPV67JxqZsVS1ej_Q_kLlHXDTgGIhCCgO9PM-gyG1CIOtQQAIoAdl9GKzw4y-AjkPmaZDNdcVl9hqmUcrNQgu4lhNR6-mVL7FhR6GgL8I4DIDxRyFLL2k3czpUOvWrXTNVMnhkIkPYrom1ny2HgUrGTEdBOvYbyYg5PbFWmfyj5mt-pyY4Jer64fxezfREQbs26WFEEi_iX2Dn-pBVMGsZs4E" alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </button>
           </div>
@@ -148,7 +146,12 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
                 { label: 'Flashcards Due',  value: '34',      icon: 'quiz',                 color: '#a78bfa' },
               ].map(s => (
                 <div key={s.label} className="glass glass-hover" style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}
-                  onClick={() => comingSoon(s.label + ' details')}>
+                  onClick={() => {
+                    if (s.label === 'Total Notes') onSearch?.()
+                    if (s.label === 'Study Streak') navigate('/timer')
+                    if (s.label === 'Topics Mastered') navigate('/graph')
+                    if (s.label === 'Flashcards Due') navigate('/quiz')
+                  }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${s.color}14`, border: `1px solid ${s.color}30`, flexShrink: 0 }}>
                     <span className="material-symbols-outlined" style={{ color: s.color, fontSize: 20 }}>{s.icon}</span>
                   </div>
@@ -168,7 +171,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
                 <div style={{ width: 3, height: 18, borderRadius: 2, background: 'linear-gradient(#00d4ff,#00ff88)' }} />
                 <h2 className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>Knowledge MOCs</h2>
               </div>
-              <button onClick={() => comingSoon('All MOCs view')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--cyan)', fontFamily: 'JetBrains Mono, monospace' }}>View all →</button>
+              <button onClick={() => onSearch?.()} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--cyan)', fontFamily: 'JetBrains Mono, monospace' }}>View all →</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
               {mocs.map(m => {
@@ -204,7 +207,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
                 <div style={{ width: 3, height: 18, borderRadius: 2, background: 'linear-gradient(#00d4ff,#00ff88)' }} />
                 <h2 className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>Recent Garden Entries</h2>
               </div>
-              <button onClick={() => comingSoon('All notes view')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--cyan)', fontFamily: 'JetBrains Mono, monospace' }}>View all →</button>
+              <button onClick={() => onSearch?.()} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--cyan)', fontFamily: 'JetBrains Mono, monospace' }}>View all →</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {notes.slice(0, 6).map(n => (
