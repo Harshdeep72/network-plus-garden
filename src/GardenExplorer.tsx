@@ -23,7 +23,6 @@ GigabitEthernet0/1     unassigned      YES unset  adm. down  down
 Loopback0              1.1.1.1         YES manual up         up`;
 
 export default function GardenExplorer() {
-  const navigate = useNavigate();
 
   function comingSoon(label: string) {
     toast(`${label} — Coming Soon`, 'This feature is currently being built.', 'coming-soon');

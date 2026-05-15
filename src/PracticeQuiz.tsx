@@ -91,7 +91,6 @@ function generateQuestions(count = 15): Question[] {
   return shuffle(pool).slice(0, count)
 }
 
-const MATURITY_COLOR = { '🌱 Seedling':'var(--cyan)', '🌿 Budding':'var(--green)', '🌳 Evergreen':'#a78bfa' }
 
 export default function PracticeQuiz() {
   const navigate = useNavigate()

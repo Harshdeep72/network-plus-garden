@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+// @ts-expect-error untyped plugin
 import { notesPlugin } from './vite-plugin-notes.js'
 
 export default defineConfig(({command}) => ({

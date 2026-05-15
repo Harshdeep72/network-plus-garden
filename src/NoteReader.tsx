@@ -63,8 +63,6 @@ export default function NoteReader({ onSearch }: { onSearch?: () => void }) {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [content, setContent] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const [videoOpen, setVideoOpen] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -253,16 +251,7 @@ export default function NoteReader({ onSearch }: { onSearch?: () => void }) {
             </div>
           )}
 
-          {loading && (
-            <div style={{ display:'flex',alignItems:'center',gap:12,color:'var(--text-faint)',padding:'40px 0' }}>
-              <span className="material-symbols-outlined" style={{ fontSize:20 }}>sync</span>
-              Loading note…
-            </div>
-          )}
-          {error && <div style={{ color:'#ff5f57',padding:'20px 0' }}>{error}</div>}
-          {!loading && !error && (
-            <div className="note-content" dangerouslySetInnerHTML={{ __html: renderMd(content) }} />
-          )}
+          <div className="note-content" dangerouslySetInnerHTML={{ __html: renderMd(content) }} />
 
           {/* Prev / Next note */}
           <div style={{ display:'flex',justifyContent:'space-between',marginTop:48,paddingTop:20,borderTop:'1px solid var(--border)',gap:12 }}>

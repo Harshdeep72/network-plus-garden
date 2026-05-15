@@ -134,6 +134,7 @@ export default function KnowledgeGraph() {
     }
 
     function draw() {
+      if (!canvas) return
       const ctx = canvas.getContext('2d')!
       ctx.clearRect(0,0,W,H)
       ctx.save()

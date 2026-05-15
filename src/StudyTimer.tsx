@@ -33,10 +33,9 @@ export default function StudyTimer() {
   const [sessions, setSessions] = useState<Session[]>(loadSessions)
   const [pomCount, setPomCount] = useState(0)
   const [showSettings, setShowSettings] = useState(false)
-  const [tick, setTick] = useState(0) // force re-render
+  const [, setTick] = useState(0) // force re-render
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimeRef = useRef<number>(0)
-  const pausedAtRef = useRef<number>(0)
 
   const pct = remaining / totalSecs
 
