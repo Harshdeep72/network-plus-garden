@@ -163,9 +163,6 @@ export default function KnowledgeGraph() {
               linkDirectionalParticleWidth={1.2}
               linkDirectionalParticleColor={() => 'rgba(0, 212, 255, 0.4)'}
               // Adjust layout forces to spread notes out comfortably
-              d3VelocityDecay={0.2}
-              warmupTicks={50}
-              cooldownTicks={300}
             />
           )}
 
