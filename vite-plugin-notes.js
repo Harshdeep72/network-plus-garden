@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, statSync, createReadStream } from 'fs'
 import { join, extname, basename } from 'path'
 
-const CONTENT_DIR = '/run/media/harshdeep/ExternalSSD/Documents/Networking/network-notes-garden-ssd/content'
+const CONTENT_DIR = join(process.cwd(), 'content')
 const VIDEO_DIR   = '/run/media/harshdeep/ExternalSSD/Documents/Networking/@Hack_institute CompTIA Network+ (N10-009) Full Course & Practice Exam'
 const VIRTUAL_ID  = 'virtual:notes'
 const RESOLVED    = '\0' + VIRTUAL_ID
