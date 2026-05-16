@@ -4,14 +4,14 @@ import ForceGraph2D from 'react-force-graph-2d'
 import { notes } from 'virtual:notes'
 
 /* ── colour palette per folder ─────────────────────────── */
-const FOLDER_COLORS = [
+export const FOLDER_COLORS = [
   '#00d4ff','#00ff88','#a78bfa','#fb923c','#f472b6',
   '#34d399','#fbbf24','#60a5fa','#e879f9','#2dd4bf',
   '#f87171','#818cf8','#c084fc','#4ade80','#facc15',
   '#38bdf8','#fb7185','#a3e635','#e2e8f0','#94a3b8',
 ]
 const folders = [...new Set(notes.map(n => n.folder))]
-const folderColor = (f: string) => FOLDER_COLORS[folders.indexOf(f) % FOLDER_COLORS.length]
+export const folderColor = (f: string) => FOLDER_COLORS[folders.indexOf(f) % FOLDER_COLORS.length]
 
 export default function KnowledgeGraph() {
   const containerRef = useRef<HTMLDivElement>(null)

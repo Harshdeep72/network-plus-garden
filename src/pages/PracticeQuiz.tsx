@@ -91,6 +91,14 @@ function generateQuestions(count = 15): Question[] {
   return shuffle(pool).slice(0, count)
 }
 
+export const QUIZ_STORAGE_KEY = 'cybernetQuizStats'
+export function loadQuizStats() {
+  try { return JSON.parse(localStorage.getItem(QUIZ_STORAGE_KEY) || '{"maxStreak":0,"totalCorrect":0,"totalQuestions":0,"quizzesTaken":0}') }
+  catch { return {"maxStreak":0,"totalCorrect":0,"totalQuestions":0,"quizzesTaken":0} }
+}
+export function saveQuizStats(stats: any) {
+  localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(stats))
+}
 
 export default function PracticeQuiz() {
   const navigate = useNavigate()
@@ -146,7 +154,16 @@ export default function PracticeQuiz() {
   }
 
   function handleNext() {
-    if (qIdx + 1 >= questions.length) { setScreen('result'); return }
+    if (qIdx + 1 >= questions.length) {
+      const stats = loadQuizStats()
+      stats.maxStreak = Math.max(stats.maxStreak, maxStreak)
+      stats.totalCorrect += score
+      stats.totalQuestions += questions.length
+      stats.quizzesTaken += 1
+      saveQuizStats(stats)
+      setScreen('result')
+      return
+    }
     setQIdx(i => i+1); setSelected(null); setConfirmed(false); setTimeLeft(20)
   }
 

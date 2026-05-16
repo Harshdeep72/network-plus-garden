@@ -1,14 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { notes } from 'virtual:notes';
 import { toast } from '../components/Toast';
+import { loadQuizStats } from './PracticeQuiz';
+
+function loadSessions() {
+  try { return JSON.parse(localStorage.getItem('cybernetTimerSessions') || '[]') } catch { return [] }
+}
 
 const mocs = [
-  { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/note/networking-fundamentals-moc' },
-  { icon: '◈', label: 'Network Security',        sub: 'Firewalls · VPNs · AAA',   color: '#00ff88', notes: 31, progress: 40, to: '/note/security-moc' },
-  { icon: '◈', label: 'Troubleshooting',         sub: 'Tools · Methodology · Labs', color: '#a78bfa', notes: 28, progress: 25, to: '/note/troubleshooting-moc' },
-  { icon: '◈', label: 'Infrastructure',          sub: 'Routing · Switching · WAN', color: '#fb923c', notes: 35, progress: 50, to: '/explore' },
-  { icon: '◈', label: 'Wireless Networking',     sub: 'Wi-Fi · Bluetooth · Cellular', color: '#f472b6', notes: 19, progress: 20, to: '/explore' },
-  { icon: '◈', label: 'Cloud Networking',        sub: 'AWS · Azure · Hybrid',       color: '#34d399', notes: 22, progress: 15, to: '/explore' },
+  { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/moc/01 Networking Fundamentals' },
+  { icon: '◈', label: 'Network Security',        sub: 'Firewalls · VPNs · AAA',   color: '#00ff88', notes: 31, progress: 40, to: '/moc/18 Network Security' },
+  { icon: '◈', label: 'Troubleshooting',         sub: 'Tools · Methodology · Labs', color: '#a78bfa', notes: 28, progress: 25, to: '/moc/19 Network Troubleshooting Methodology' },
+  { icon: '◈', label: 'Infrastructure',          sub: 'Routing · Switching · WAN', color: '#fb923c', notes: 35, progress: 50, to: '/moc/13 Routing and Routing Protocols' },
+  { icon: '◈', label: 'Wireless Networking',     sub: 'Wi-Fi · Bluetooth · Cellular', color: '#f472b6', notes: 19, progress: 20, to: '/moc/15 Wireless Standards' },
+  { icon: '◈', label: 'Cloud Networking',        sub: 'AWS · Azure · Hybrid',       color: '#34d399', notes: 22, progress: 15, to: '/moc/17 Cloud Concepts' },
 ];
 
 
@@ -27,6 +32,16 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
   const readiness = 60;
   const circumference = 2 * Math.PI * 54;
   const offset = circumference - (readiness / 100) * circumference;
+
+  const sessions = loadSessions();
+  const daySet = new Set(sessions.filter((s:any)=>s.mode==='focus'&&s.completed).map((s:any)=>s.date));
+  let streak = 0;
+  const d = new Date();
+  if (!daySet.has(d.toISOString().slice(0,10))) d.setDate(d.getDate()-1);
+  while (daySet.has(d.toISOString().slice(0,10))) { streak++; d.setDate(d.getDate()-1); }
+
+  const quizStats = loadQuizStats();
+  const accuracy = quizStats.totalQuestions > 0 ? Math.round((quizStats.totalCorrect / quizStats.totalQuestions) * 100) : 0;
 
 
 
@@ -140,17 +155,17 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
             {/* Quick stats */}
             <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 16 }}>
               {[
-                { label: 'Total Notes',     value: '257',     icon: 'description',          color: '#00d4ff' },
-                { label: 'Study Streak',    value: '14 days', icon: 'local_fire_department', color: '#fb923c' },
-                { label: 'Topics Mastered', value: '8 / 20',  icon: 'verified',             color: '#00ff88' },
-                { label: 'Flashcards Due',  value: '34',      icon: 'quiz',                 color: '#a78bfa' },
+                { label: 'Total Notes',     value: `${notes.length}`,     icon: 'description',          color: '#00d4ff' },
+                { label: 'Study Streak',    value: `${streak} days`,      icon: 'local_fire_department', color: '#fb923c' },
+                { label: 'Quiz Accuracy',   value: `${accuracy}%`,        icon: 'verified',             color: '#00ff88' },
+                { label: 'Quizzes Taken',   value: `${quizStats.quizzesTaken}`, icon: 'quiz',           color: '#a78bfa' },
               ].map(s => (
                 <div key={s.label} className="glass glass-hover" style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}
                   onClick={() => {
                     if (s.label === 'Total Notes') onSearch?.()
                     if (s.label === 'Study Streak') navigate('/timer')
-                    if (s.label === 'Topics Mastered') navigate('/graph')
-                    if (s.label === 'Flashcards Due') navigate('/quiz')
+                    if (s.label === 'Quiz Accuracy') navigate('/quiz')
+                    if (s.label === 'Quizzes Taken') navigate('/quiz')
                   }}>
                   <div style={{ width: 42, height: 42, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${s.color}14`, border: `1px solid ${s.color}30`, flexShrink: 0 }}>
                     <span className="material-symbols-outlined" style={{ color: s.color, fontSize: 20 }}>{s.icon}</span>
