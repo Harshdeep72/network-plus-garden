@@ -4,7 +4,7 @@ import { join, extname, basename } from 'path'
 
 const CONTENT_DIR = join(process.cwd(), 'content')
 const VIDEO_DIR   = '/run/media/harshdeep/ExternalSSD/Documents/Networking/@Hack_institute CompTIA Network+ (N10-009) Full Course & Practice Exam'
-const YOUTUBE_MAPPING_FILE = '/run/media/harshdeep/ExternalSSD/Documents/Networking/youtube_mapping.json'
+const YOUTUBE_MAPPING_FILE = join(process.cwd(), 'youtube_mapping.json')
 const VIRTUAL_ID  = 'virtual:notes'
 const RESOLVED    = '\0' + VIRTUAL_ID
 
@@ -103,8 +103,10 @@ function scanNotes() {
 
       const videoResult = findVideoPath(folder, file)
       const videoPath = videoResult ? videoResult.path : null
-      const videoFilename = videoResult ? videoResult.filename : null
-      const youtubeId = videoFilename ? (youtubeMapping[videoFilename] || null) : null
+      const ytMatch = content.match(/^youtubeId:\s*(.+)$/m)
+      const frontmatterYoutubeId = ytMatch ? ytMatch[1].trim() : null
+      const videoFilename = basename(file, '.md') + '.mp4'
+      const youtubeId = frontmatterYoutubeId || (youtubeMapping[videoFilename] || null)
 
       notes.push({
         slug, title, folder, folderIndex, fileIndex: i, tags, maturity,
