@@ -29,6 +29,15 @@ export default function KnowledgeGraph() {
       }
     })
     ro.observe(containerRef.current)
+
+    // Adjust graph physics to space out notes
+    setTimeout(() => {
+      if (fgRef.current) {
+        fgRef.current.d3Force('charge').strength(-120) // Default is -30, -120 pushes them apart more
+        fgRef.current.d3Force('link').distance((link: any) => link.isSpine ? 60 : 100) // Spines are tighter
+      }
+    }, 100)
+
     return () => ro.disconnect()
   }, [])
 
@@ -73,40 +82,14 @@ export default function KnowledgeGraph() {
           }
         }
       }
-    }
 
-    // 2. Add Tag hubs to connect notes sharing tags
-    const tagCounts = new Map<string, number>()
-    for (const note of visibleNotes) {
-      for (const tag of note.tags) {
-        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
-      }
-    }
-
-    for (const [tag, count] of tagCounts.entries()) {
-      if (count > 1) { // Only create a hub if it connects at least 2 notes
-        const tagId = `__tag__${tag}`
-        nodes.push({
-          id: tagId,
-          name: `#${tag}`,
-          val: Math.min(8, 2 + Math.sqrt(count)), // scale size based on connection count
-          color: 'rgba(255,255,255,0.25)',
-          folder: 'Tags',
-          isTag: true,
-          tags: [tag]
-        } as any)
-      }
-    }
-
-    for (const note of visibleNotes) {
-      for (const tag of note.tags) {
-        if ((tagCounts.get(tag) || 0) > 1) {
-          const tagId = `__tag__${tag}`
-          const edgeKey = [note.slug, tagId].sort().join('|')
-          if (!seen.has(edgeKey)) {
-            seen.add(edgeKey)
-            links.push({ source: note.slug, target: tagId })
-          }
+      // 2. Create structural spines by linking notes sequentially within their folders
+      if (note.nextSlug && visibleSlugs.has(note.nextSlug)) {
+        const edgeKey = [note.slug, note.nextSlug].sort().join('|')
+        if (!seen.has(edgeKey)) {
+          seen.add(edgeKey)
+          // Add them as slightly weaker/transparent links to denote structure
+          links.push({ source: note.slug, target: note.nextSlug, isSpine: true } as any)
         }
       }
     }
@@ -160,10 +143,10 @@ export default function KnowledgeGraph() {
               nodeLabel={() => ''} // Disabled default title tooltip in favor of bottom overlay
               nodeColor="color"
               nodeRelSize={1}
-              linkColor={() => 'rgba(0, 212, 255, 0.15)'}
-              linkWidth={0.8}
+              linkColor={(link: any) => link.isSpine ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 212, 255, 0.25)'}
+              linkWidth={(link: any) => link.isSpine ? 0.5 : 1}
+              linkLineDash={(link: any) => link.isSpine ? [2, 2] : null}
               onNodeClick={(node: any) => {
-                if (node.isTag) return;
                 navigate(`/note/${node.id}`)
               }}
               onNodeHover={(node: any) => setHoverNode(node)}
