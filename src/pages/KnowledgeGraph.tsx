@@ -151,59 +151,52 @@ export default function KnowledgeGraph() {
               }}
               onNodeHover={(node: any) => setHoverNode(node)}
               nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
-                const r = Math.max(node.val ?? 3, 1); // Guard against 0/null radius
+                const r = Math.max(node.val ?? 3, 1);
                 const isHov = node === hoverNode;
-                if (node.x == null || node.y == null) return; // Skip unpositioned nodes
+                if (node.x == null || node.y == null) return;
                 
-                // Base node glow
+                // Soft glow halo
                 try {
-                  ctx.beginPath();
-                  const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r + (isHov ? 8 : 4));
-                  glow.addColorStop(0, node.color ?? '#00d4ff');
+                  const glowRadius = r + (isHov ? 10 : 5);
+                  const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowRadius);
+                  glow.addColorStop(0, (node.color ?? '#00d4ff') + 'aa');
                   glow.addColorStop(1, 'rgba(0,0,0,0)');
+                  ctx.beginPath();
+                  ctx.arc(node.x, node.y, glowRadius, 0, 2 * Math.PI);
                   ctx.fillStyle = glow;
-                  ctx.arc(node.x, node.y, r + (isHov ? 8 : 4), 0, 2 * Math.PI, false);
                   ctx.fill();
-                } catch { /* Skip glow on error */ }
+                } catch { /* noop */ }
 
-                // Solid core
+                // Solid core circle
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
-                ctx.fillStyle = isHov ? '#ffffff' : node.color;
+                ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
+                ctx.fillStyle = isHov ? '#ffffff' : (node.color ?? '#00d4ff');
                 ctx.fill();
                 
+                // Hover ring
                 if (isHov) {
-                  // Outer ring for hover
                   ctx.beginPath();
-                  ctx.arc(node.x, node.y, r + 4, 0, 2 * Math.PI, false);
-                  ctx.strokeStyle = '#fff';
-                  ctx.lineWidth = 1.5 / globalScale;
+                  ctx.arc(node.x, node.y, r + 3, 0, 2 * Math.PI);
+                  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+                  ctx.lineWidth = 1 / globalScale;
                   ctx.stroke();
-                }
 
-                // Draw text label if zoomed in enough or if hovered
-                if (globalScale > 2.5 || isHov) {
-                  const fontSize = (isHov ? 14 : 12) / globalScale;
-                  ctx.font = `${isHov ? 'bold ' : ''}${fontSize}px "Inter", sans-serif`;
+                  // Label — ONLY on hover
+                  const fontSize = Math.min(14 / globalScale, 14);
+                  ctx.font = `bold ${fontSize}px "Inter", sans-serif`;
                   ctx.textAlign = 'center';
-                  ctx.textBaseline = 'middle';
-                  
-                  // Text shadow for legibility
+                  ctx.textBaseline = 'top';
                   ctx.shadowColor = '#000';
-                  ctx.shadowBlur = 4 / globalScale;
-                  
-                  ctx.fillStyle = isHov ? '#ffffff' : 'rgba(255, 255, 255, 0.75)';
-                  ctx.fillText(node.name, node.x, node.y + r + (10 / globalScale) + fontSize);
-                  
-                  // Reset shadow
+                  ctx.shadowBlur = 6;
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillText(node.name, node.x, node.y + r + 3 / globalScale);
                   ctx.shadowBlur = 0;
                 }
               }}
-              // Dynamic directional particles for wikilinks (spines get no particles)
-              linkDirectionalParticles={(link: any) => link.isSpine ? 0 : 3}
-              linkDirectionalParticleWidth={(link: any) => link.isSpine ? 0 : 1.5}
-              linkDirectionalParticleColor={() => 'rgba(0, 212, 255, 0.8)'}
-              linkDirectionalParticleSpeed={0.005}
+              linkDirectionalParticles={(link: any) => link.isSpine ? 0 : 2}
+              linkDirectionalParticleWidth={1.5}
+              linkDirectionalParticleColor={() => 'rgba(0, 212, 255, 0.9)'}
+              linkDirectionalParticleSpeed={0.004}
               // Adjust layout forces to spread notes out comfortably
             />
           )}
