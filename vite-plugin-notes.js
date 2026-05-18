@@ -105,9 +105,25 @@ function scanNotes() {
       const videoPath = videoResult ? videoResult.path : null
       const ytMatch = content.match(/^youtubeId:\s*(.+)$/m)
       const frontmatterYoutubeId = ytMatch ? ytMatch[1].trim() : null
-      const videoFilename = basename(file, '.md') + '.mp4'
-      const youtubeId = frontmatterYoutubeId || (youtubeMapping[videoFilename] || null)
-
+      const baseName = basename(file, '.md')
+      
+      let youtubeId = frontmatterYoutubeId
+      if (!youtubeId) {
+        if (youtubeMapping[baseName + '.mp4']) {
+          youtubeId = youtubeMapping[baseName + '.mp4']
+        } else {
+          const noteNum = (baseName.match(/^(\d+)/) || [])[1]
+          if (noteNum) {
+            const searchStr = baseName.replace(/^(\d+)\s*/, '').toLowerCase()
+            for (const [vFile, yId] of Object.entries(youtubeMapping)) {
+              if (vFile.startsWith(noteNum + ' ') && vFile.toLowerCase().includes(searchStr)) {
+                youtubeId = yId
+                break
+              }
+            }
+          }
+        }
+      }
       notes.push({
         slug, title, folder, folderIndex, fileIndex: i, tags, maturity,
         excerpt: extractExcerpt(content),
