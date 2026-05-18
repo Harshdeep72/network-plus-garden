@@ -154,35 +154,53 @@ export default function KnowledgeGraph() {
                 const r = node.val;
                 const isHov = node === hoverNode;
                 
+                // Base node glow
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, r + (isHov ? 3 : 0), 0, 2 * Math.PI, false);
-                ctx.fillStyle = isHov ? '#ffffff' : node.color;
-                ctx.globalAlpha = isHov ? 1 : 0.8;
+                const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r + (isHov ? 8 : 4));
+                glow.addColorStop(0, node.color);
+                glow.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = glow;
+                ctx.arc(node.x, node.y, r + (isHov ? 8 : 4), 0, 2 * Math.PI, false);
                 ctx.fill();
-                ctx.globalAlpha = 1;
+
+                // Solid core
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
+                ctx.fillStyle = isHov ? '#ffffff' : node.color;
+                ctx.fill();
                 
                 if (isHov) {
+                  // Outer ring for hover
                   ctx.beginPath();
-                  ctx.arc(node.x, node.y, r + 6, 0, 2 * Math.PI, false);
-                  ctx.strokeStyle = node.color;
+                  ctx.arc(node.x, node.y, r + 4, 0, 2 * Math.PI, false);
+                  ctx.strokeStyle = '#fff';
                   ctx.lineWidth = 1.5 / globalScale;
                   ctx.stroke();
                 }
 
                 // Draw text label if zoomed in enough or if hovered
                 if (globalScale > 2.5 || isHov) {
-                  const fontSize = 12 / globalScale;
-                  ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
+                  const fontSize = (isHov ? 14 : 12) / globalScale;
+                  ctx.font = `${isHov ? 'bold ' : ''}${fontSize}px "Inter", sans-serif`;
                   ctx.textAlign = 'center';
                   ctx.textBaseline = 'middle';
-                  ctx.fillStyle = isHov ? '#ffffff' : 'rgba(255, 255, 255, 0.7)';
-                  ctx.fillText(node.name, node.x, node.y + r + (8 / globalScale) + fontSize);
+                  
+                  // Text shadow for legibility
+                  ctx.shadowColor = '#000';
+                  ctx.shadowBlur = 4 / globalScale;
+                  
+                  ctx.fillStyle = isHov ? '#ffffff' : 'rgba(255, 255, 255, 0.75)';
+                  ctx.fillText(node.name, node.x, node.y + r + (10 / globalScale) + fontSize);
+                  
+                  // Reset shadow
+                  ctx.shadowBlur = 0;
                 }
               }}
-              // Make lines point slightly more elegantly
-              linkDirectionalParticles={2}
-              linkDirectionalParticleWidth={1.2}
-              linkDirectionalParticleColor={() => 'rgba(0, 212, 255, 0.4)'}
+              // Dynamic directional particles for wikilinks (spines get no particles)
+              linkDirectionalParticles={(link: any) => link.isSpine ? 0 : 3}
+              linkDirectionalParticleWidth={(link: any) => link.isSpine ? 0 : 1.5}
+              linkDirectionalParticleColor={() => 'rgba(0, 212, 255, 0.8)'}
+              linkDirectionalParticleSpeed={0.005}
               // Adjust layout forces to spread notes out comfortably
             />
           )}
