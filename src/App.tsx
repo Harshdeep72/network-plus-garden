@@ -9,8 +9,6 @@ import MocView from './pages/MocView'
 import { ToastContainer } from './components/Toast'
 import { CommandPalette } from './components/CommandPalette'
 import GardenExplorer from './pages/GardenExplorer'
-import { notes } from 'virtual:notes'
-
 function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
 
