@@ -59,6 +59,7 @@ export default function KnowledgeGraph() {
     const links: { source: string; target: string }[] = []
     const seen = new Set<string>()
 
+    // 1. Create edge connections for explicit wikilinks
     for (const note of visibleNotes) {
       for (const wl of note.wikilinks) {
         let target = titleMap.get(wl.toLowerCase())
@@ -69,6 +70,42 @@ export default function KnowledgeGraph() {
           if (!seen.has(edgeKey)) { 
             seen.add(edgeKey)
             links.push({ source: note.slug, target: target.slug })
+          }
+        }
+      }
+    }
+
+    // 2. Add Tag hubs to connect notes sharing tags
+    const tagCounts = new Map<string, number>()
+    for (const note of visibleNotes) {
+      for (const tag of note.tags) {
+        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
+      }
+    }
+
+    for (const [tag, count] of tagCounts.entries()) {
+      if (count > 1) { // Only create a hub if it connects at least 2 notes
+        const tagId = `__tag__${tag}`
+        nodes.push({
+          id: tagId,
+          name: `#${tag}`,
+          val: Math.min(8, 2 + Math.sqrt(count)), // scale size based on connection count
+          color: 'rgba(255,255,255,0.25)',
+          folder: 'Tags',
+          isTag: true,
+          tags: [tag]
+        } as any)
+      }
+    }
+
+    for (const note of visibleNotes) {
+      for (const tag of note.tags) {
+        if ((tagCounts.get(tag) || 0) > 1) {
+          const tagId = `__tag__${tag}`
+          const edgeKey = [note.slug, tagId].sort().join('|')
+          if (!seen.has(edgeKey)) {
+            seen.add(edgeKey)
+            links.push({ source: note.slug, target: tagId })
           }
         }
       }
@@ -125,7 +162,10 @@ export default function KnowledgeGraph() {
               nodeRelSize={1}
               linkColor={() => 'rgba(0, 212, 255, 0.15)'}
               linkWidth={0.8}
-              onNodeClick={(node: any) => navigate(`/note/${node.id}`)}
+              onNodeClick={(node: any) => {
+                if (node.isTag) return;
+                navigate(`/note/${node.id}`)
+              }}
               onNodeHover={(node: any) => setHoverNode(node)}
               nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
                 const r = node.val;
