@@ -151,17 +151,20 @@ export default function KnowledgeGraph() {
               }}
               onNodeHover={(node: any) => setHoverNode(node)}
               nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
-                const r = node.val;
+                const r = Math.max(node.val ?? 3, 1); // Guard against 0/null radius
                 const isHov = node === hoverNode;
+                if (node.x == null || node.y == null) return; // Skip unpositioned nodes
                 
                 // Base node glow
-                ctx.beginPath();
-                const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r + (isHov ? 8 : 4));
-                glow.addColorStop(0, node.color);
-                glow.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = glow;
-                ctx.arc(node.x, node.y, r + (isHov ? 8 : 4), 0, 2 * Math.PI, false);
-                ctx.fill();
+                try {
+                  ctx.beginPath();
+                  const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r + (isHov ? 8 : 4));
+                  glow.addColorStop(0, node.color ?? '#00d4ff');
+                  glow.addColorStop(1, 'rgba(0,0,0,0)');
+                  ctx.fillStyle = glow;
+                  ctx.arc(node.x, node.y, r + (isHov ? 8 : 4), 0, 2 * Math.PI, false);
+                  ctx.fill();
+                } catch { /* Skip glow on error */ }
 
                 // Solid core
                 ctx.beginPath();
