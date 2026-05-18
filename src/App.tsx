@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import NoteReader from './pages/NoteReader'
 import KnowledgeGraph from './pages/KnowledgeGraph'
@@ -24,8 +24,6 @@ function App() {
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [])
-
-  const firstSlug = notes[0]?.slug ?? ''
 
   return (
     <HashRouter>

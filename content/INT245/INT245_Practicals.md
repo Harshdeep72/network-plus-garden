@@ -20,8 +20,6 @@ aliases:
 ## 1. Nmap Network Scanning & Enumeration
 Nmap is utilized to map out the network, find open ports, and enumerate services running on those ports.
 
-> [!tip] Automated Script Available
-> Run the pre-configured automation script: `./scripts/1_nmap_scans.sh <target_ip>`
 
 ```bash
 #!/bin/bash
@@ -68,8 +66,6 @@ echo "[*] Scans complete!"
 ## 2. Exploiting vsftpd 2.3.4 (Metasploitable 2)
 A classic lab demonstrating how to use the Metasploit Framework to exploit a known vulnerability in an FTP daemon.
 
-> [!tip] Automated Script Available
-> Run the Metasploit resource script: `TARGET_IP=<target_ip> msfconsole -r scripts/2_vsftpd_exploit.rc`
 
 ```ruby
 # Metasploit Resource Script for vsftpd 2.3.4
@@ -105,8 +101,6 @@ end
 ## 3. Social Engineering Toolkit (SET) & Session Hijacking
 A lab demonstrating Credential Harvesting, Phishing, and malicious payload generation.
 
-> [!tip] Automated Script Available
-> Launch the interactive helper script: `./scripts/3_setoolkit_helper.sh`
 
 ```bash
 #!/bin/bash
@@ -149,8 +143,6 @@ sudo setoolkit
 ## 4. Password Cracking with John the Ripper
 A demonstration of a dictionary attack against Linux shadow hashes.
 
-> [!tip] Automated Script Available
-> Run the end-to-end cracking script: `./scripts/4_john_cracker.sh <password>`
 
 ```bash
 #!/bin/bash
@@ -208,8 +200,6 @@ rm -f "$HASH_FILE"
 ## 5. OSINT and Reconnaissance
 Practical commands to gather intelligence about a target domain or person.
 
-> [!tip] Automated Script Available
-> Run the comprehensive OSINT script: `./scripts/5_osint_recon.sh <target_domain>`
 
 ```bash
 #!/bin/bash
@@ -276,8 +266,6 @@ fi
 ## 6. SQL Injection (SQLi) Manual Enumeration
 Testing input fields for basic SQL injection vulnerabilities.
 
-> [!tip] Automated Script Available
-> Run the payload helper script: `python3 scripts/6_sqli_tester.py`
 
 ```python
 #!/usr/bin/env python3
@@ -325,8 +313,6 @@ if __name__ == "__main__":
 ## 7. Python Network Scanner
 Writing a basic ARP scanner using Scapy.
 
-> [!tip] Automated Script Available
-> Run the completed scanner script: `sudo python3 scripts/7_network_scanner.py <ip_range>`
 
 ```python
 #!/usr/bin/env python3

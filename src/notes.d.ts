@@ -16,6 +16,7 @@ declare module 'virtual:notes' {
     prevTitle: string | null
     nextTitle: string | null
     videoPath: string | null
+    youtubeId: string | null
   }
   export const notes: NoteEntry[]
 }

@@ -1,11 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { notes } from 'virtual:notes';
 import { toast } from '../components/Toast';
-import { loadQuizStats } from './PracticeQuiz';
-
-function loadSessions() {
-  try { return JSON.parse(localStorage.getItem('cybernetTimerSessions') || '[]') } catch { return [] }
-}
 
 const mocs = [
   { icon: '◈', label: 'CompTIA Network+', sub: 'Certification Prep', color: '#00d4ff', notes: 261, progress: 60, to: '/explore' },
@@ -28,7 +23,6 @@ const sidebarItems = [
 
 export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
   const navigate = useNavigate();
-  const d = new Date();
 
 
 
