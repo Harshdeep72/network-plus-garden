@@ -16,7 +16,11 @@ fi
 # -a: archive mode (preserves permissions, times, symbolic links, etc.)
 # -v: verbose
 # --delete: delete extraneous files from destination
-rsync -av --delete "$SOURCE_DIR/" "$DEST_DIR/"
+rsync -av --delete --exclude='INT245' "$SOURCE_DIR/" "$DEST_DIR/"
+
+# Also sync the INT245 college subject notes
+echo "[Sync] Synchronizing INT245 College Subject notes..."
+rsync -av ../INT245/ "$DEST_DIR/INT245/"
 
 echo "[Sync] Synchronization complete."
 

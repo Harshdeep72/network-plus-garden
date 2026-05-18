@@ -2,3 +2,9 @@ node_modules/
 dist/
 .env
 *.local
+
+# Study materials - keep source files out of repo
+content/**/*.pdf
+content/**/*.pptx
+content/**/*.docx
+content/**/*.xlsx

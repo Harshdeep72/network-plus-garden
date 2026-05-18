@@ -8,6 +8,7 @@ import StudyTimer from './pages/StudyTimer'
 import MocView from './pages/MocView'
 import { ToastContainer } from './components/Toast'
 import { CommandPalette } from './components/CommandPalette'
+import GardenExplorer from './pages/GardenExplorer'
 import { notes } from 'virtual:notes'
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Dashboard onSearch={() => setPaletteOpen(true)} />} />
-        <Route path="/explore" element={<Navigate to={`/note/${firstSlug}`} replace />} />
+        <Route path="/explore" element={<GardenExplorer />} />
         <Route path="/moc/:folder" element={<MocView />} />
         <Route path="/note/:slug" element={<NoteReader onSearch={() => setPaletteOpen(true)} />} />
         <Route path="/graph" element={<KnowledgeGraph />} />

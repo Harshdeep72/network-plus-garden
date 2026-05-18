@@ -69,7 +69,7 @@ export default function StudyTimer() {
         if (mode === 'focus') setPomCount(p => p+1)
         // Notification
         if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('CyberNet Timer', { body: `${MODE_LABEL[mode]} complete! 🎉`, icon: '/vite.svg' })
+          new Notification("Skyler's Garden", { body: `${MODE_LABEL[mode]} complete! 🎉`, icon: '/vite.svg' })
         }
         // beep
         try {

@@ -1,8 +1,10 @@
+// Force restart v2 — YouTube embed support
 import { readFileSync, readdirSync, statSync, createReadStream } from 'fs'
 import { join, extname, basename } from 'path'
 
 const CONTENT_DIR = join(process.cwd(), 'content')
 const VIDEO_DIR   = '/run/media/harshdeep/ExternalSSD/Documents/Networking/@Hack_institute CompTIA Network+ (N10-009) Full Course & Practice Exam'
+const YOUTUBE_MAPPING_FILE = '/run/media/harshdeep/ExternalSSD/Documents/Networking/youtube_mapping.json'
 const VIRTUAL_ID  = 'virtual:notes'
 const RESOLVED    = '\0' + VIRTUAL_ID
 
@@ -57,9 +59,17 @@ function findVideoPath(folderName, fileName) {
   try {
     const files = readdirSync(join(VIDEO_DIR, videoFolder))
     const match = files.find(f => f.startsWith(noteNum + ' ') && f.endsWith('.mp4'))
-    if (match) return join(VIDEO_DIR, videoFolder, match)
+    if (match) return { path: join(VIDEO_DIR, videoFolder, match), filename: match }
   } catch {}
   return null
+}
+
+function loadYoutubeMapping() {
+  try {
+    return JSON.parse(readFileSync(YOUTUBE_MAPPING_FILE, 'utf-8'))
+  } catch {
+    return {}
+  }
 }
 
 function scanNotes() {
@@ -68,6 +78,7 @@ function scanNotes() {
   const folders = entries.filter(f => {
     try { return statSync(join(CONTENT_DIR, f)).isDirectory() && f !== 'MOCs' } catch { return false }
   })
+  const youtubeMapping = loadYoutubeMapping()
 
   for (const folder of folders) {
     const folderMatch = folder.match(/^(\d+)/)
@@ -90,7 +101,10 @@ function scanNotes() {
         : tags.find(t => t.includes('budding')) ? 'budding' : 'seedling'
       const slug = `${slugify(folder)}--${slugify(basename(file, '.md'))}`
 
-      const videoPath = findVideoPath(folder, file)
+      const videoResult = findVideoPath(folder, file)
+      const videoPath = videoResult ? videoResult.path : null
+      const videoFilename = videoResult ? videoResult.filename : null
+      const youtubeId = videoFilename ? (youtubeMapping[videoFilename] || null) : null
 
       notes.push({
         slug, title, folder, folderIndex, fileIndex: i, tags, maturity,
@@ -99,6 +113,7 @@ function scanNotes() {
         relativePath: folder + '/' + file,
         content,                   // ← full markdown for static build
         videoPath: videoPath || null,
+        youtubeId: youtubeId || null,
         prevSlug: i > 0 ? `${slugify(folder)}--${slugify(basename(files[i-1], '.md'))}` : null,
         nextSlug: i < files.length-1 ? `${slugify(folder)}--${slugify(basename(files[i+1], '.md'))}` : null,
         prevTitle: i > 0 ? basename(files[i-1], '.md') : null,

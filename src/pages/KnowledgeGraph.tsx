@@ -61,7 +61,9 @@ export default function KnowledgeGraph() {
 
     for (const note of visibleNotes) {
       for (const wl of note.wikilinks) {
-        const target = titleMap.get(wl.toLowerCase())
+        let target = titleMap.get(wl.toLowerCase())
+        if (!target) target = titleMap.get(wl.toLowerCase().replace(/[_]/g, ' '))
+        if (!target) target = titleMap.get(wl.toLowerCase().replace(/[-]/g, ' '))
         if (target && target.slug !== note.slug && visibleSlugs.has(target.slug)) {
           const edgeKey = [note.slug, target.slug].sort().join('|')
           if (!seen.has(edgeKey)) { 

@@ -8,12 +8,11 @@ function loadSessions() {
 }
 
 const mocs = [
-  { icon: '◈', label: 'Networking Fundamentals', sub: 'OSI · TCP/IP · Protocols', color: '#00d4ff', notes: 42, progress: 65, to: '/moc/01 Networking Fundamentals' },
-  { icon: '◈', label: 'Network Security',        sub: 'Firewalls · VPNs · AAA',   color: '#00ff88', notes: 31, progress: 40, to: '/moc/18 Network Security' },
-  { icon: '◈', label: 'Troubleshooting',         sub: 'Tools · Methodology · Labs', color: '#a78bfa', notes: 28, progress: 25, to: '/moc/19 Network Troubleshooting Methodology' },
-  { icon: '◈', label: 'Infrastructure',          sub: 'Routing · Switching · WAN', color: '#fb923c', notes: 35, progress: 50, to: '/moc/13 Routing and Routing Protocols' },
-  { icon: '◈', label: 'Wireless Networking',     sub: 'Wi-Fi · Bluetooth · Cellular', color: '#f472b6', notes: 19, progress: 20, to: '/moc/15 Wireless Standards' },
-  { icon: '◈', label: 'Cloud Networking',        sub: 'AWS · Azure · Hybrid',       color: '#34d399', notes: 22, progress: 15, to: '/moc/17 Cloud Concepts' },
+  { icon: '◈', label: 'CompTIA Network+', sub: 'Certification Prep', color: '#00d4ff', notes: 261, progress: 60, to: '/explore' },
+];
+
+const collegeMocs = [
+  { icon: '🎓', label: 'INT245', sub: 'Pentesting & Security', color: '#f43f5e', notes: 4, progress: 0, to: '/moc/INT245' },
 ];
 
 
@@ -29,19 +28,7 @@ const sidebarItems = [
 
 export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
   const navigate = useNavigate();
-  const readiness = 60;
-  const circumference = 2 * Math.PI * 54;
-  const offset = circumference - (readiness / 100) * circumference;
-
-  const sessions = loadSessions();
-  const daySet = new Set(sessions.filter((s:any)=>s.mode==='focus'&&s.completed).map((s:any)=>s.date));
-  let streak = 0;
   const d = new Date();
-  if (!daySet.has(d.toISOString().slice(0,10))) d.setDate(d.getDate()-1);
-  while (daySet.has(d.toISOString().slice(0,10))) { streak++; d.setDate(d.getDate()-1); }
-
-  const quizStats = loadQuizStats();
-  const accuracy = quizStats.totalQuestions > 0 ? Math.round((quizStats.totalCorrect / quizStats.totalQuestions) * 100) : 0;
 
 
 
@@ -57,10 +44,10 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px 24px' }}>
           <div style={{ width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#00d4ff22,#00ff8822)', border: '1px solid rgba(0,212,255,0.3)' }}>
-            <span style={{ color: 'var(--cyan)', fontSize: 16 }}>⬡</span>
+            <span style={{ color: 'var(--cyan)', fontSize: 16 }}>🌿</span>
           </div>
           <div>
-            <div className="mono" style={{ color: 'var(--cyan)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}>CYBERNET</div>
+            <div className="mono" style={{ color: 'var(--cyan)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}>SKYLER'S GARDEN</div>
             <div style={{ color: 'var(--text-faint)', fontSize: 10, letterSpacing: '0.05em' }}>STUDY DASHBOARD</div>
           </div>
         </div>
@@ -104,7 +91,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
         <header style={{ height: 60, borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', background: 'rgba(8,12,18,0.8)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50, gap: 16 }}>
           <div>
             <span style={{ color: 'var(--text-faint)', fontSize: 13 }}>Good evening, </span>
-            <span className="cursor-blink mono" style={{ color: 'var(--cyan)', fontSize: 13, fontWeight: 600 }}>Student</span>
+            <span className="cursor-blink mono" style={{ color: 'var(--cyan)', fontSize: 13, fontWeight: 600 }}>Skyler</span>
           </div>
           {/* Search bar */}
           <button onClick={onSearch} style={{ flex: 1, maxWidth: 380, display: 'flex', alignItems: 'center', gap: 10, padding: '7px 14px', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-2)', borderRadius: 10, cursor: 'pointer', color: 'var(--text-faint)', fontSize: 13, fontFamily: 'inherit', transition: 'border-color 0.2s' }}>
@@ -122,62 +109,7 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
 
         <main style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: 28, overflowY: 'auto' }} className="grid-bg">
 
-          {/* ── Readiness Banner ── */}
-          <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
-            <div className="glass scan-line" style={{ gridColumn: 'span 1', padding: '28px', display: 'flex', alignItems: 'center', gap: 24, position: 'relative' }}>
-              <div style={{ position: 'relative', width: 120, height: 120, flexShrink: 0 }}>
-                <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
-                  <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#00d4ff" /><stop offset="100%" stopColor="#00ff88" /></linearGradient></defs>
-                  <circle cx="60" cy="60" r="54" fill="none" stroke="url(#grad1)" strokeWidth="8" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} className="progress-ring" style={{ filter: 'drop-shadow(0 0 6px rgba(0,212,255,0.5))' }} />
-                </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <span className="gradient-text mono" style={{ fontSize: 26, fontWeight: 700 }}>{readiness}%</span>
-                  <span style={{ fontSize: 9, color: 'var(--text-faint)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>ready</span>
-                </div>
-              </div>
-              <div>
-                <div className="mono" style={{ fontSize: 11, color: 'var(--cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Network+ Readiness</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, marginBottom: 12 }}>Certification<br />Track</div>
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.04)', padding: '8px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-faint)', marginBottom: 2 }}>Modules</div>
-                    <div className="mono" style={{ fontSize: 15, fontWeight: 600, color: 'var(--cyan)' }}>12<span style={{ color: 'var(--text-faint)', fontWeight: 400 }}>/20</span></div>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.04)', padding: '8px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-faint)', marginBottom: 2 }}>Exam Date</div>
-                    <div className="mono" style={{ fontSize: 15, fontWeight: 600, color: 'var(--green)' }}>Jun 12</div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Quick stats */}
-            <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 16 }}>
-              {[
-                { label: 'Total Notes',     value: `${notes.length}`,     icon: 'description',          color: '#00d4ff' },
-                { label: 'Study Streak',    value: `${streak} days`,      icon: 'local_fire_department', color: '#fb923c' },
-                { label: 'Quiz Accuracy',   value: `${accuracy}%`,        icon: 'verified',             color: '#00ff88' },
-                { label: 'Quizzes Taken',   value: `${quizStats.quizzesTaken}`, icon: 'quiz',           color: '#a78bfa' },
-              ].map(s => (
-                <div key={s.label} className="glass glass-hover" style={{ padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}
-                  onClick={() => {
-                    if (s.label === 'Total Notes') onSearch?.()
-                    if (s.label === 'Study Streak') navigate('/timer')
-                    if (s.label === 'Quiz Accuracy') navigate('/quiz')
-                    if (s.label === 'Quizzes Taken') navigate('/quiz')
-                  }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${s.color}14`, border: `1px solid ${s.color}30`, flexShrink: 0 }}>
-                    <span className="material-symbols-outlined" style={{ color: s.color, fontSize: 20 }}>{s.icon}</span>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 2 }}>{s.label}</div>
-                    <div className="mono" style={{ fontSize: 20, fontWeight: 700, color: s.color }}>{s.value}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
 
           {/* ── Knowledge MOCs ── */}
           <section>
@@ -204,6 +136,37 @@ export default function Dashboard({ onSearch }: { onSearch?: () => void }) {
                       <div className="progress-fill" style={{ width: `${m.progress}%`, background: `linear-gradient(90deg,${m.color}99,${m.color})` }} />
                     </div>
                     <div className="mono" style={{ fontSize: 10, color: 'var(--text-faint)', marginTop: 6 }}>{m.progress}% complete</div>
+                  </div>
+                );
+                return m.to ? (
+                  <Link key={m.label} to={m.to} style={{ textDecoration: 'none' }}>{inner}</Link>
+                ) : (
+                  <div key={m.label} style={{ cursor: 'pointer' }} onClick={() => toast('Coming Soon', `${m.label} MOC`, 'info')}>{inner}</div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ── College Subjects ── */}
+          <section>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 3, height: 18, borderRadius: 2, background: 'linear-gradient(#f43f5e,#fb923c)' }} />
+                <h2 className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>College Subjects</h2>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              {collegeMocs.map(m => {
+                const inner = (
+                  <div className="glass note-card glass-hover" style={{ padding: '20px', borderRadius: 14, height: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${m.color}14`, border: `1px solid ${m.color}30` }}>
+                        <span style={{ color: m.color, fontSize: 18 }}>{m.icon}</span>
+                      </div>
+                      <span className="mono" style={{ fontSize: 11, color: 'var(--text-faint)' }}>{m.notes} notes</span>
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>{m.label}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-faint)' }}>{m.sub}</div>
                   </div>
                 );
                 return m.to ? (
