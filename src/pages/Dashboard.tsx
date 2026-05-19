@@ -17,6 +17,7 @@ const sidebarItems = [
   { icon: 'dashboard',    label: 'Dashboard',      to: '/',        active: true  },
   { icon: 'hub',          label: 'Garden Explorer',to: '/explore', active: false },
   { icon: 'account_tree', label: 'Knowledge Graph',to: '/graph',   active: false },
+  { icon: 'style',        label: 'Flashcards',     to: '/flashcards',active: false },
   { icon: 'quiz',         label: 'Practice Quiz',  to: '/quiz',    active: false },
   { icon: 'timer',        label: 'Study Timer',    to: '/timer',   active: false },
 ];

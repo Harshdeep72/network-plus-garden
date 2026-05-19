@@ -47,6 +47,52 @@ function generateQuestions(count = 15): Question[] {
   const pool: Question[] = []
   let id = 0
 
+  // 1. Extract content-based terms/definitions
+  const termDefs: { term: string, def: string, noteSlug: string, noteFolder: string }[] = []
+  const termRegex = /\*\*(.+?)\*\*:\s*(.+?)(?=\n|$)/g
+  
+  for (const note of notes) {
+    if (!note.content) continue
+    let match
+    while ((match = termRegex.exec(note.content)) !== null) {
+      if (match[1].toLowerCase() === 'tags') continue
+      termDefs.push({
+        term: match[1].trim(),
+        def: match[2].trim(),
+        noteSlug: note.slug,
+        noteFolder: note.folder
+      })
+    }
+  }
+
+  // Generate content questions
+  for (const td of termDefs) {
+    if (pool.length >= count * 4) break
+    const wrongDefs = pick(termDefs.filter(t => t.term !== td.term), 3).map(t => t.def)
+    if (wrongDefs.length === 3) {
+      pool.push({
+        id: id++,
+        text: `What is the definition of "${td.term}"?`,
+        options: shuffle([td.def, ...wrongDefs]),
+        answer: td.def,
+        noteSlug: td.noteSlug,
+        explanation: `"${td.term}" is defined as: ${td.def}`
+      })
+      
+      // Also do the reverse question: Which term matches this definition?
+      const wrongTerms = pick(termDefs.filter(t => t.def !== td.def), 3).map(t => t.term)
+      pool.push({
+        id: id++,
+        text: `Which term is defined as: "${td.def}"?`,
+        options: shuffle([td.term, ...wrongTerms]),
+        answer: td.term,
+        noteSlug: td.noteSlug,
+        explanation: `The definition "${td.def}" belongs to ${td.term}.`
+      })
+    }
+  }
+
+  // 2. Generate metadata questions (original)
   for (const note of shuffle(notes)) {
     if (pool.length >= count * 4) break
 
@@ -76,16 +122,6 @@ function generateQuestions(count = 15): Question[] {
         explanation: `"${note.title}" is part of ${note.folder}.`
       })
     }
-
-    // Type 3: What is the maturity stage of this note?
-    pool.push({
-      id: id++,
-      text: `What is the knowledge maturity stage of the note "${note.title}"?`,
-      options: shuffle(['🌱 Seedling', '🌿 Budding', '🌳 Evergreen']),
-      answer: note.maturity === 'seedling' ? '🌱 Seedling' : note.maturity === 'budding' ? '🌿 Budding' : '🌳 Evergreen',
-      noteSlug: note.slug,
-      explanation: `"${note.title}" is marked as ${note.maturity}.`
-    })
   }
 
   return shuffle(pool).slice(0, count)

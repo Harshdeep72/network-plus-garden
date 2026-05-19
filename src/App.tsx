@@ -9,6 +9,7 @@ import MocView from './pages/MocView'
 import { ToastContainer } from './components/Toast'
 import { CommandPalette } from './components/CommandPalette'
 import GardenExplorer from './pages/GardenExplorer'
+import Flashcards from './pages/Flashcards'
 function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/graph" element={<KnowledgeGraph />} />
         <Route path="/quiz" element={<PracticeQuiz />} />
         <Route path="/timer" element={<StudyTimer />} />
+        <Route path="/flashcards" element={<Flashcards />} />
       </Routes>
       <ToastContainer />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
